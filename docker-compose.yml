@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: hr_backend
+    build: ./Backend
+    ports:
+      - "3054:3054"
+    depends_on:
+      - postgres
+    environment:
+      - PGUSER=postgres
+      - PGPASSWORD=admin123
+      - PGHOST=postgres
+      - PGDATABASE=hr_db
+      - PGPORT=5432
+    networks:
+      - hr_net
+
+  frontend:
+    container_name: hr_frontend
+    build: ./Frontend
+    ports:
+      - "8088:80"
+    depends_on:
+      - backend
+    networks:
+      - hr_net
+
+  hr:
+    container_name: hr_portal
+    build: ./HR
+    ports:
+      - "8089:80"
+    depends_on:
+      - backend
+    networks:
+      - hr_net
+
+  postgres:
+    container_name: hr_postgres
+    image: postgres:13
+    ports:
+      - "5454:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=hr_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hr_net
+
+volumes:
+  pgdata:
+
+networks:
+  hr_net:
+    driver: bridge
+
