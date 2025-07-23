@@ -180,5 +180,5 @@ app.post('/api/reviews', async (req, res) => {
 // Start server
 app.listen(port, async () => {
   await initializeDatabase();
-  console.log(`Server running on http://13.60.10.12:${port}`);
+  console.log(`Server running on http://16.16.215.28:${port}`);
 });
